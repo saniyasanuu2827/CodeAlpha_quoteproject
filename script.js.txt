@@ -1,0 +1,900 @@
+/* =========================================================
+   QUOTEFLOW - RANDOM QUOTE GENERATOR
+   ========================================================= */
+
+
+/* -------------------------
+   Quote Database
+------------------------- */
+
+const quotes = [
+
+    {
+        text: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs",
+        category: "success"
+    },
+
+    {
+        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        author: "Winston Churchill",
+        category: "success"
+    },
+
+    {
+        text: "The future depends on what you do today.",
+        author: "Mahatma Gandhi",
+        category: "motivation"
+    },
+
+    {
+        text: "Believe you can and you're halfway there.",
+        author: "Theodore Roosevelt",
+        category: "motivation"
+    },
+
+    {
+        text: "It always seems impossible until it's done.",
+        author: "Nelson Mandela",
+        category: "inspiration"
+    },
+
+    {
+        text: "The purpose of our lives is to be happy.",
+        author: "Dalai Lama",
+        category: "life"
+    },
+
+    {
+        text: "In the middle of difficulty lies opportunity.",
+        author: "Albert Einstein",
+        category: "wisdom"
+    },
+
+    {
+        text: "Do what you can, with what you have, where you are.",
+        author: "Theodore Roosevelt",
+        category: "life"
+    },
+
+    {
+        text: "Everything you've ever wanted is on the other side of fear.",
+        author: "George Addair",
+        category: "motivation"
+    },
+
+    {
+        text: "Great things are done by a series of small things brought together.",
+        author: "Vincent van Gogh",
+        category: "inspiration"
+    },
+
+    {
+        text: "Dream big and dare to fail.",
+        author: "Norman Vincent Peale",
+        category: "motivation"
+    },
+
+    {
+        text: "Happiness depends upon ourselves.",
+        author: "Aristotle",
+        category: "life"
+    },
+
+    {
+        text: "Knowledge speaks, but wisdom listens.",
+        author: "Jimi Hendrix",
+        category: "wisdom"
+    },
+
+    {
+        text: "The secret of getting ahead is getting started.",
+        author: "Mark Twain",
+        category: "success"
+    },
+
+    {
+        text: "What we think, we become.",
+        author: "Buddha",
+        category: "wisdom"
+    },
+
+    {
+        text: "Act as if what you do makes a difference. It does.",
+        author: "William James",
+        category: "inspiration"
+    },
+
+    {
+        text: "You miss 100% of the shots you don't take.",
+        author: "Wayne Gretzky",
+        category: "success"
+    },
+
+    {
+        text: "Don't watch the clock; do what it does. Keep going.",
+        author: "Sam Levenson",
+        category: "motivation"
+    },
+
+    {
+        text: "A journey of a thousand miles begins with a single step.",
+        author: "Lao Tzu",
+        category: "wisdom"
+    },
+
+    {
+        text: "Turn your wounds into wisdom.",
+        author: "Oprah Winfrey",
+        category: "inspiration"
+    }
+
+];
+
+
+/* -------------------------
+   DOM Elements
+------------------------- */
+
+const quoteText =
+    document.getElementById("quoteText");
+
+const quoteAuthor =
+    document.getElementById("quoteAuthor");
+
+const category =
+    document.getElementById("category");
+
+const quoteCard =
+    document.getElementById("quoteCard");
+
+const newQuoteBtn =
+    document.getElementById("newQuoteBtn");
+
+const favoriteBtn =
+    document.getElementById("favoriteBtn");
+
+const copyBtn =
+    document.getElementById("copyBtn");
+
+const shareBtn =
+    document.getElementById("shareBtn");
+
+const themeBtn =
+    document.getElementById("themeBtn");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const categoryFilter =
+    document.getElementById("categoryFilter");
+
+const toast =
+    document.getElementById("toast");
+
+const toastMessage =
+    document.getElementById("toastMessage");
+
+const favoritesBtn =
+    document.getElementById("favoritesBtn");
+
+const historyBtn =
+    document.getElementById("historyBtn");
+
+const favoritesModal =
+    document.getElementById("favoritesModal");
+
+const historyModal =
+    document.getElementById("historyModal");
+
+const favoritesList =
+    document.getElementById("favoritesList");
+
+const historyList =
+    document.getElementById("historyList");
+
+const favoriteCount =
+    document.getElementById("favoriteCount");
+
+const totalQuotes =
+    document.getElementById("totalQuotes");
+
+const totalFavorites =
+    document.getElementById("totalFavorites");
+
+const viewCount =
+    document.getElementById("viewCount");
+
+
+/* -------------------------
+   Application State
+------------------------- */
+
+let currentQuote = null;
+
+let favorites =
+    JSON.parse(
+        localStorage.getItem("quoteFavorites")
+    ) || [];
+
+let history =
+    JSON.parse(
+        localStorage.getItem("quoteHistory")
+    ) || [];
+
+let views =
+    Number(
+        localStorage.getItem("quoteViews")
+    ) || 0;
+
+
+/* -------------------------
+   Local Storage
+------------------------- */
+
+function saveData() {
+
+    localStorage.setItem(
+        "quoteFavorites",
+        JSON.stringify(favorites)
+    );
+
+    localStorage.setItem(
+        "quoteHistory",
+        JSON.stringify(history)
+    );
+
+    localStorage.setItem(
+        "quoteViews",
+        views
+    );
+
+}
+
+
+/* -------------------------
+   Random Quote
+------------------------- */
+
+function getRandomQuote(list = quotes) {
+
+    if (!list.length) {
+
+        showToast("No matching quotes found.");
+
+        return;
+
+    }
+
+    let randomIndex;
+
+    do {
+
+        randomIndex =
+            Math.floor(Math.random() * list.length);
+
+    } while (
+        list.length > 1 &&
+        list[randomIndex] === currentQuote
+    );
+
+    return list[randomIndex];
+
+}
+
+
+/* -------------------------
+   Display Quote
+------------------------- */
+
+function displayQuote(quote) {
+
+    if (!quote) return;
+
+    currentQuote = quote;
+
+    quoteText.textContent =
+        `"${quote.text}"`;
+
+    quoteAuthor.textContent =
+        `— ${quote.author}`;
+
+    category.textContent =
+        quote.category;
+
+    updateFavoriteButton();
+
+    quoteCard.style.animation = "none";
+
+    void quoteCard.offsetWidth;
+
+    quoteCard.style.animation =
+        "cardIn 0.5s ease";
+
+    views++;
+
+    addToHistory(quote);
+
+    saveData();
+
+    updateStats();
+
+}
+
+
+/* -------------------------
+   New Quote
+------------------------- */
+
+function generateNewQuote() {
+
+    const selectedCategory =
+        categoryFilter.value;
+
+    let availableQuotes = quotes;
+
+    if (selectedCategory !== "all") {
+
+        availableQuotes =
+            quotes.filter(
+                quote =>
+                    quote.category === selectedCategory
+            );
+
+    }
+
+    const quote =
+        getRandomQuote(availableQuotes);
+
+    displayQuote(quote);
+
+}
+
+
+/* -------------------------
+   Favorites
+------------------------- */
+
+function isFavorite(quote) {
+
+    return favorites.some(
+        item =>
+            item.text === quote.text &&
+            item.author === quote.author
+    );
+
+}
+
+
+function toggleFavorite() {
+
+    if (!currentQuote) return;
+
+    const index =
+        favorites.findIndex(
+            item =>
+                item.text === currentQuote.text &&
+                item.author === currentQuote.author
+        );
+
+    if (index === -1) {
+
+        favorites.push(currentQuote);
+
+        showToast("Added to favorites ❤️");
+
+    } else {
+
+        favorites.splice(index, 1);
+
+        showToast("Removed from favorites");
+
+    }
+
+    saveData();
+
+    updateFavoriteButton();
+
+    updateStats();
+
+}
+
+
+function updateFavoriteButton() {
+
+    if (!currentQuote) return;
+
+    if (isFavorite(currentQuote)) {
+
+        favoriteBtn.classList.add("active");
+
+        favoriteBtn.innerHTML =
+            '<i class="fa-solid fa-heart"></i>';
+
+    } else {
+
+        favoriteBtn.classList.remove("active");
+
+        favoriteBtn.innerHTML =
+            '<i class="fa-regular fa-heart"></i>';
+
+    }
+
+}
+
+
+/* -------------------------
+   History
+------------------------- */
+
+function addToHistory(quote) {
+
+    history =
+        history.filter(
+            item =>
+                item.text !== quote.text
+        );
+
+    history.unshift(quote);
+
+    history =
+        history.slice(0, 10);
+
+}
+
+
+function renderHistory() {
+
+    if (!history.length) {
+
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-clock"></i>
+                <p>No quote history yet.</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+    historyList.innerHTML =
+        history.map(quote => `
+
+            <div class="modal-quote">
+
+                <p>"${quote.text}"</p>
+
+                <small>
+                    — ${quote.author}
+                </small>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* -------------------------
+   Favorites List
+------------------------- */
+
+function renderFavorites() {
+
+    if (!favorites.length) {
+
+        favoritesList.innerHTML = `
+            <div class="empty-state">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <p>
+                    You haven't saved any quotes yet.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+    favoritesList.innerHTML =
+        favorites.map(quote => `
+
+            <div class="modal-quote">
+
+                <p>"${quote.text}"</p>
+
+                <small>
+                    — ${quote.author}
+                </small>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* -------------------------
+   Copy Quote
+------------------------- */
+
+async function copyQuote() {
+
+    if (!currentQuote) return;
+
+    const text =
+        `"${currentQuote.text}" — ${currentQuote.author}`;
+
+    try {
+
+        await navigator.clipboard.writeText(text);
+
+        showToast("Quote copied to clipboard!");
+
+    } catch {
+
+        showToast("Unable to copy quote.");
+
+    }
+
+}
+
+
+/* -------------------------
+   Share Quote
+------------------------- */
+
+async function shareQuote() {
+
+    if (!currentQuote) return;
+
+    const text =
+        `"${currentQuote.text}" — ${currentQuote.author}`;
+
+    if (navigator.share) {
+
+        try {
+
+            await navigator.share({
+
+                title: "QuoteFlow",
+
+                text: text
+
+            });
+
+        } catch {
+
+            // User cancelled sharing
+
+        }
+
+    } else {
+
+        await copyQuote();
+
+        showToast(
+            "Sharing unavailable. Quote copied!"
+        );
+
+    }
+
+}
+
+
+/* -------------------------
+   Search
+------------------------- */
+
+function searchQuotes() {
+
+    const search =
+        searchInput.value
+            .toLowerCase()
+            .trim();
+
+    const selectedCategory =
+        categoryFilter.value;
+
+    let results =
+        quotes.filter(quote => {
+
+            const matchesSearch =
+                quote.text
+                    .toLowerCase()
+                    .includes(search) ||
+
+                quote.author
+                    .toLowerCase()
+                    .includes(search);
+
+            const matchesCategory =
+                selectedCategory === "all" ||
+                quote.category === selectedCategory;
+
+            return matchesSearch &&
+                   matchesCategory;
+
+        });
+
+    if (results.length) {
+
+        displayQuote(
+            getRandomQuote(results)
+        );
+
+    } else {
+
+        showToast("No quotes found.");
+
+    }
+
+}
+
+
+/* -------------------------
+   Theme
+------------------------- */
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    localStorage.setItem(
+        "quoteTheme",
+        isDark ? "dark" : "light"
+    );
+
+    themeBtn.innerHTML =
+        isDark
+
+        ? '<i class="fa-solid fa-sun"></i>'
+
+        : '<i class="fa-solid fa-moon"></i>';
+
+}
+
+
+function loadTheme() {
+
+    const theme =
+        localStorage.getItem("quoteTheme");
+
+    if (theme === "dark") {
+
+        document.body.classList.add("dark");
+
+        themeBtn.innerHTML =
+            '<i class="fa-solid fa-sun"></i>';
+
+    }
+
+}
+
+
+/* -------------------------
+   Toast
+------------------------- */
+
+let toastTimer;
+
+function showToast(message) {
+
+    toastMessage.textContent =
+        message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 2500);
+
+}
+
+
+/* -------------------------
+   Statistics
+------------------------- */
+
+function updateStats() {
+
+    totalQuotes.textContent =
+        quotes.length;
+
+    favoriteCount.textContent =
+        favorites.length;
+
+    totalFavorites.textContent =
+        favorites.length;
+
+    viewCount.textContent =
+        views;
+
+}
+
+
+/* -------------------------
+   Modal Controls
+------------------------- */
+
+favoritesBtn.addEventListener(
+    "click",
+    () => {
+
+        renderFavorites();
+
+        favoritesModal.classList.add("show");
+
+    }
+);
+
+
+historyBtn.addEventListener(
+    "click",
+    () => {
+
+        renderHistory();
+
+        historyModal.classList.add("show");
+
+    }
+);
+
+
+document.querySelectorAll(".close-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .getElementById(
+                        button.dataset.close
+                    )
+                    .classList.remove("show");
+
+            }
+        );
+
+    });
+
+
+document
+    .querySelectorAll(".modal-overlay")
+    .forEach(modal => {
+
+        modal.addEventListener(
+            "click",
+            event => {
+
+                if (event.target === modal) {
+
+                    modal.classList.remove("show");
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* -------------------------
+   Event Listeners
+------------------------- */
+
+newQuoteBtn.addEventListener(
+    "click",
+    generateNewQuote
+);
+
+
+favoriteBtn.addEventListener(
+    "click",
+    toggleFavorite
+);
+
+
+copyBtn.addEventListener(
+    "click",
+    copyQuote
+);
+
+
+shareBtn.addEventListener(
+    "click",
+    shareQuote
+);
+
+
+themeBtn.addEventListener(
+    "click",
+    toggleTheme
+);
+
+
+searchInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+
+            searchQuotes();
+
+        }
+
+    }
+);
+
+
+categoryFilter.addEventListener(
+    "change",
+    generateNewQuote
+);
+
+
+/* -------------------------
+   Keyboard Shortcut
+------------------------- */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        // Don't generate quote while typing
+        if (
+            event.target.tagName === "INPUT" ||
+            event.target.tagName === "TEXTAREA"
+        ) {
+            return;
+        }
+
+        if (event.code === "Space") {
+
+            event.preventDefault();
+
+            generateNewQuote();
+
+        }
+
+        if (event.key === "Escape") {
+
+            favoritesModal.classList.remove("show");
+
+            historyModal.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+/* -------------------------
+   Application Start
+------------------------- */
+
+function init() {
+
+    loadTheme();
+
+    updateStats();
+
+    generateNewQuote();
+
+}
+
+
+init();

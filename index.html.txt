@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="A modern random quote generator with favorites, history and sharing.">
+
+    <title>QuoteFlow | Random Quote Generator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background decoration -->
+    <div class="background">
+        <div class="blob blob-one"></div>
+        <div class="blob blob-two"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-quote-left"></i>
+            <span>Quote<span class="logo-highlight">Flow</span></span>
+        </div>
+
+        <div class="nav-actions">
+
+            <button id="favoritesBtn"
+                    class="icon-btn"
+                    title="Favorites">
+
+                <i class="fa-solid fa-heart"></i>
+                <span id="favoriteCount">0</span>
+
+            </button>
+
+            <button id="historyBtn"
+                    class="icon-btn"
+                    title="Quote History">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+            </button>
+
+            <button id="themeBtn"
+                    class="icon-btn"
+                    title="Toggle theme">
+
+                <i class="fa-solid fa-moon"></i>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <!-- Hero -->
+        <section class="hero">
+
+            <p class="eyebrow">
+                <i class="fa-solid fa-sparkles"></i>
+                DAILY INSPIRATION
+            </p>
+
+            <h1>
+                A little wisdom
+                <span>goes a long way.</span>
+            </h1>
+
+            <p class="hero-description">
+                Discover meaningful quotes from thinkers, creators,
+                leaders and innovators around the world.
+            </p>
+
+        </section>
+
+
+        <!-- Main Quote Card -->
+        <section class="quote-section">
+
+            <div class="quote-card" id="quoteCard">
+
+                <div class="quote-top">
+
+                    <span class="category" id="category">
+                        Inspiration
+                    </span>
+
+                    <button id="favoriteBtn"
+                            class="favorite-btn"
+                            title="Add to favorites">
+
+                        <i class="fa-regular fa-heart"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div class="quote-content">
+
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+
+                    <blockquote id="quoteText">
+                        The future depends on what you do today.
+                    </blockquote>
+
+                    <p class="author" id="quoteAuthor">
+                        — Mahatma Gandhi
+                    </p>
+
+                </div>
+
+
+                <div class="quote-actions">
+
+                    <button id="copyBtn"
+                            class="secondary-btn">
+
+                        <i class="fa-regular fa-copy"></i>
+                        Copy
+
+                    </button>
+
+
+                    <button id="shareBtn"
+                            class="secondary-btn">
+
+                        <i class="fa-solid fa-share-nodes"></i>
+                        Share
+
+                    </button>
+
+
+                    <button id="newQuoteBtn"
+                            class="primary-btn">
+
+                        <i class="fa-solid fa-shuffle"></i>
+                        New Quote
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Search and filter -->
+        <section class="tools-section">
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search quotes or authors...">
+
+            </div>
+
+
+            <select id="categoryFilter">
+
+                <option value="all">
+                    All Categories
+                </option>
+
+                <option value="motivation">
+                    Motivation
+                </option>
+
+                <option value="success">
+                    Success
+                </option>
+
+                <option value="life">
+                    Life
+                </option>
+
+                <option value="wisdom">
+                    Wisdom
+                </option>
+
+                <option value="inspiration">
+                    Inspiration
+                </option>
+
+            </select>
+
+        </section>
+
+
+        <!-- Statistics -->
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-quote-right"></i>
+
+                <div>
+                    <strong id="totalQuotes">
+                        0
+                    </strong>
+
+                    <span>
+                        Quotes Available
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-heart"></i>
+
+                <div>
+                    <strong id="totalFavorites">
+                        0
+                    </strong>
+
+                    <span>
+                        Favorites
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <i class="fa-solid fa-eye"></i>
+
+                <div>
+                    <strong id="viewCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Quotes Viewed
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Keyboard hint -->
+        <p class="keyboard-hint">
+
+            <span>
+                <kbd>SPACE</kbd>
+            </span>
+
+            Press Space for a new quote
+
+        </p>
+
+    </main>
+
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+
+        <i class="fa-solid fa-check"></i>
+
+        <span id="toastMessage">
+            Copied!
+        </span>
+
+    </div>
+
+
+    <!-- Favorites Modal -->
+    <div class="modal-overlay" id="favoritesModal">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>
+                    <i class="fa-solid fa-heart"></i>
+                    Favorite Quotes
+                </h2>
+
+                <button class="close-btn"
+                        data-close="favoritesModal">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div id="favoritesList"
+                 class="modal-content">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- History Modal -->
+    <div class="modal-overlay" id="historyModal">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Quote History
+                </h2>
+
+                <button class="close-btn"
+                        data-close="historyModal">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div id="historyList"
+                 class="modal-content">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <p>
+            Built with ❤️ using HTML, CSS & JavaScript
+        </p>
+
+        <p>
+            QuoteFlow © 2026
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
